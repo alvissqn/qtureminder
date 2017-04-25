@@ -23,6 +23,7 @@ import com.example.alviss.qtureminder.R;
 import com.example.alviss.qtureminder.lib.AlarmReceiver;
 import com.example.alviss.qtureminder.lib.JSONParser;
 import com.example.alviss.qtureminder.lib.ListAdapter;
+import com.example.alviss.qtureminder.lib.MyUtility;
 import com.example.alviss.qtureminder.lib.RingtoneService;
 import com.example.alviss.qtureminder.lib.SchedulingService;
 import com.example.alviss.qtureminder.lib.Service_Url;
@@ -48,13 +49,14 @@ public class TaskActivity extends AppCompatActivity {
     private int getidtask;
     Button btnCreateViec;
     private int[] taskid;
+    private String[] datetask, hourtask;
     int uid;
     JSONParser jsonParser = new JSONParser();
     public String mes_result="";
     public String linklist = Service_Url.listtask;
     ArrayList<ListTask> mang_task;
     Context context = this;
-    AlarmReceiver alarm = new AlarmReceiver();
+    MyUtility alarm = new MyUtility();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,14 +172,22 @@ public class TaskActivity extends AppCompatActivity {
                 Log.d("Create Response", jsonObj.toString());
                 JSONArray task = jsonObj.getJSONArray("answers");
                 taskid = new int[task.length()];
+                hourtask = new String[task.length()];
+                datetask = new String[task.length()];
                 for(int i=0; i < task.length(); i++){
                     JSONObject c = task.getJSONObject(i);
                     String title_task = c.getString("titletask");
                     String date_task = c.getString("date_task");
                     String time_task = c.getString("time_task");
+                   // String thietbi = c.getString("device");
                     taskid[i] = c.getInt("taskid");
+                    datetask[i] = c.getString("date_task");
+                    hourtask[i] = c.getString("time_task");
+//                    if(thietbi.equals("website")) {
+//                        alarm.setAlarm(TaskActivity.this,date_task,time_task,taskid[i]);
+//                    }
+
                     mang_task.add(new ListTask(title_task,date_task,time_task));
-                    alarm.setAlarm(TaskActivity.this,date_task,time_task,taskid[i]);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -192,10 +202,13 @@ public class TaskActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ListAdapter adapter = new ListAdapter(TaskActivity.this, R.layout.activity_line_task,mang_task);
+                    ListAdapter adapter = new ListAdapter(TaskActivity.this, R.layout.activity_line_task, mang_task);
                     lv.setAdapter(adapter);
                 }
             });
+//            for (int j = 0; j < taskid.length; j++){
+//                alarm.setAlarm(TaskActivity.this,datetask[j],hourtask[j],taskid[j]);
+//            }
         }
     }
 
@@ -223,6 +236,7 @@ public class TaskActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObj = jsonParser.makeHttpRequest(Service_Url.deletetask,"GET", listtask);
                 Log.d("Create Response", jsonObj.toString());
+                alarm.cancel(context,getidtask);
                 mes_result = jsonObj.getString("message");
 
             } catch (JSONException e) {
@@ -236,9 +250,9 @@ public class TaskActivity extends AppCompatActivity {
             super.onPostExecute(s);
             pDialog.dismiss();
             Toast.makeText(TaskActivity.this, mes_result, Toast.LENGTH_SHORT).show();
-            new AlarmReceiver().cancel(context,getidtask);
             Intent i = new Intent(TaskActivity.this,TaskActivity.class);
             startActivity(i);
+            finish();
         }
     }
 

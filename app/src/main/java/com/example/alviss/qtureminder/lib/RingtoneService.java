@@ -23,12 +23,12 @@ import com.example.alviss.qtureminder.activity.TaskActivity;
  */
 
 public class RingtoneService extends Service {
-    //private MediaPlayer media_song;
+    private MediaPlayer media_song;
     private NotificationManager mNotificationManager;
     Ringtone r;
     private String tieude,noidung;
     private int idtask;
-    Uri alert;
+    Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -36,24 +36,25 @@ public class RingtoneService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getStringExtra("title") != null) {
+//        if (intent.getStringExtra("title") != null) {
             tieude = intent.getStringExtra("title");//get data here sended from BroadcastReceiver
             noidung = intent.getStringExtra("content");
-            idtask =intent.getIntExtra("idtask",0);
+            idtask = intent.getIntExtra("idtask",0);
             sendNotification(noidung,tieude,idtask);
-        }
-       // media_song = MediaPlayer.create(this, R.raw.cucku);
-       // media_song.start();
-        alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        runRingtone();
+            //runRingtone();
+     //   }
+        media_song = MediaPlayer.create(this, R.raw.cucku);
+        media_song.start();
+
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         // Tell the user we stopped.
-        Toast.makeText(this, "On destroy called", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Bạn đã hoàn thành công việc", Toast.LENGTH_SHORT).show();
         stopRingtone();
+
     }
 
     private void sendNotification(String content,String title,int idnotifi) {
@@ -79,7 +80,8 @@ public class RingtoneService extends Service {
         r.play();
     }
     public void stopRingtone(){
-        r.stop();
+        //r.stop();
+        media_song.stop();
     }
 
 }

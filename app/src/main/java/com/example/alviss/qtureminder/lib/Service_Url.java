@@ -6,7 +6,7 @@ package com.example.alviss.qtureminder.lib;
 
 public class Service_Url {
 
-    public static String hostname = "http://192.168.1.221";
+    public static String hostname = "http://172.16.48.123";
     public static String login = hostname+"/json/login.php";
     public static String createtask = hostname+"/json/createtask.php";
     public static String listtask = hostname+"/json/listitem.php";

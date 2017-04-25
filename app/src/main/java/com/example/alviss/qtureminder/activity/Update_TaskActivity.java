@@ -45,7 +45,8 @@ public class Update_TaskActivity extends AppCompatActivity {
    // public String congviec,noidung,ngay,time;
     public int taskid;
     JSONParser jsonParser = new JSONParser();
-    AlarmReceiver alarm = new AlarmReceiver();
+    //AlarmReceiver alarm = new AlarmReceiver();
+    MyUtility alarm = new MyUtility();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +192,7 @@ public class Update_TaskActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String congviec,noidung,ngay,time, idupdate;
+            String congviec,noidung,ngay,time;
             List<NameValuePair> taskarr = new ArrayList<NameValuePair>();
             congviec = edtCongviec.getText().toString();
             noidung = edtNoidung.getText().toString();
@@ -230,11 +231,6 @@ public class Update_TaskActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             pDialog.dismiss();
 
-//            Intent alrm = new Intent(Update_TaskActivity.this, AlarmReceiver.class);
-//            alrm.putExtra("title",congviec);
-//            alrm.putExtra("content",noidung);
-//            alrm.putExtra("idtask",taskid);
-//            sendBroadcast(alrm);
             Toast.makeText(context, mes_result, Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Update_TaskActivity.this, TaskActivity.class);
             startActivity(i);

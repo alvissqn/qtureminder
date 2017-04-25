@@ -37,13 +37,14 @@ public class CreateTask extends AppCompatActivity {
     TextView txtdate, txttime;
     Button btnDate, btnTime,btnCongviec;
     private ProgressDialog pDialog;
-    private Context context = this;
+
     public String linkcreatetask = Service_Url.createtask;
     public String mes_result="";
     public String congviec,noidung,ngay,time;
     public int taskid;
     JSONParser jsonParser = new JSONParser();
-    AlarmReceiver alarm = new AlarmReceiver();
+
+    MyUtility alarm = new MyUtility();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class CreateTask extends AppCompatActivity {
         String time = MyUtility.getCurrentTime();
         txttime.setText(time);
         btnCongviec = (Button) findViewById(R.id.btncongviec);
+
         btnCongviec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +116,7 @@ public class CreateTask extends AppCompatActivity {
         //các lệnh dưới này xử lý ngày giờ trong TimePickerDialog
         //sẽ giống với trên TextView khi mở nó lên
         String s=txttime.getText()+"";
-        System.out.println("Thoi gian lay duoc la : " +s);
+
         String strArr[]=s.split(":");
         int gio=Integer.parseInt(strArr[0]);
         int phut=Integer.parseInt(strArr[1]);
@@ -127,6 +129,7 @@ public class CreateTask extends AppCompatActivity {
     private class AddTask extends AsyncTask<Void, Void, Void>{
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
             pDialog = new ProgressDialog(CreateTask.this);
             pDialog.setMessage("Loading ...");
@@ -137,6 +140,7 @@ public class CreateTask extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
+
             List<NameValuePair> taskarr = new ArrayList<NameValuePair>();
             congviec = edtCongviec.getText().toString();
             noidung = edtNoidung.getText().toString();
@@ -149,8 +153,9 @@ public class CreateTask extends AppCompatActivity {
             taskarr.add(new BasicNameValuePair("ngay",ngay));
             taskarr.add(new BasicNameValuePair("thoigian", time));
             taskarr.add(new BasicNameValuePair("uid",uid));
+            taskarr.add(new BasicNameValuePair("device","mobile"));
             JSONObject jsoncretask = jsonParser.makeHttpRequest(linkcreatetask,"POST", taskarr);
-            Log.d("Create Response", jsoncretask.toString());
+
             int success = 0;
             try {
                 success = jsoncretask.getInt("success");
@@ -174,15 +179,9 @@ public class CreateTask extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             pDialog.dismiss();
-
-            Intent alrm = new Intent(CreateTask.this, AlarmReceiver.class);
-                alrm.putExtra("title",congviec);
-                alrm.putExtra("content",noidung);
-                alrm.putExtra("idtask",taskid);
-                sendBroadcast(alrm);
-            Toast.makeText(context, mes_result, Toast.LENGTH_SHORT).show();
             Intent i = new Intent(CreateTask.this, TaskActivity.class);
             startActivity(i);
+            finish();
         }
     }
 }

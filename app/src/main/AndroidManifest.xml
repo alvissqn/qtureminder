@@ -15,7 +15,6 @@
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,14 +23,15 @@
         <activity android:name=".activity.Register" />
         <activity android:name=".activity.CreateTask" />
 
-        <receiver android:name=".lib.AlarmReceiver" />
+        <receiver android:name=".lib.AlarmReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
-        <service
-            android:name=".lib.SchedulingService"
-            android:enabled="true" />
         <service android:name=".lib.RingtoneService" android:enabled="true" />
-        <activity android:name=".activity.Rington" />
-        <activity android:name=".activity.Update_TaskActivity"></activity>
+
+        <activity android:name=".activity.Update_TaskActivity" />
     </application>
 
 </manifest>
